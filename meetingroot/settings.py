@@ -158,3 +158,49 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #
 # # LDAP login authentication
 # AUTHENTICATION_BACKENDS = {"django_python3_ldap.auth.LDAPBackend",'django.contrib.auth.backends.ModelBackend',}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    'formatters': {  # 供后面formatter进行选择
+        'verbose': {	# 定义长格式
+            'format': '{levelname} {asctime} {module} {lineno} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {	# 定义短格式
+            'format': '{levelname} {asctime} {name} {lineno} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {  # 供后面handlers进行选择
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        "mail_admins": {
+            "level": 'ERROR',
+            "class": "django.utils.log.AdminEmailHandler",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "formatter": "simple",
+            "filename": BASE_DIR / 'recruitment.admin.log',
+        },
+    },
+
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
+    },
+
+    "loggers": {
+        "django.db.backends": {  # 指定日志记录器
+            "handlers": ["console"],  # 指定日志处理方法
+            "level": "DEBUG",  # 指定日志级别
+        },
+        # "django_python3_ldap": {
+        #     "handlers": ["console", "file"],
+        #     "level": "DEBUG",
+        # },
+    },
+}
