@@ -13,6 +13,15 @@ class CandidateAdmin(admin.ModelAdmin):
                     'hr_score', 'hr_result', 'hr_interviewer',
                     'last_editor']
 
+    # 查询字段
+    search_fields = ('username', 'phone', 'email', 'bachelor_school')
+
+    # 条件筛选
+    list_filter = ('city', 'first_result', 'second_result', 'hr_result', 'first_interviewer', 'second_interviewer', 'hr_interviewer')
+
+    # 条件排序
+    ordering = ('hr_result', 'second_result', 'first_result')
+
     fieldsets = (
         ('基本信息',{'fields':("userid", "username", "city", "phone", "email", "apply_position", "born_address", "gender", "candidate_remark", "bachelor_school", "master_school", "doctor_school", "major", "degree", "test_score_of_general_ability", "paper_score", "last_editor")}),
         ('第一轮面试记录',{'fields':("first_score", "first_learning_ability", "first_professional_competency", "first_advantage", "first_disadvantage", "first_result", "first_recommend_position", "first_interviewer", "first_remark")}),
