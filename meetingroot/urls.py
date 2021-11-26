@@ -24,3 +24,4 @@ urlpatterns = [
 
 admin.site.site_header = _("浆果科技招聘管理系统后台")
 admin.site.site_title = _("招聘系统")
+admin.site.index_title = _("浆果——甜甜的梦想，由你我实现")
