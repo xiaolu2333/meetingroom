@@ -21,7 +21,8 @@
         <pre style="font-size: 16px">{{ job.job_requirement }}</pre>
     </div><br>
     <div class="apply_position">
-        <input type="button" style="background-color: deepskyblue" value="申请">
+        <input type="button" style="background-color: deeppink" value="申请"
+               onclick="location.href='/resume/add/?apply_position={{ job.job_name }}&city={{ job.city_name }}'">
     </div><br>
     {% else %}
     <p>岗位不存在！</p>
