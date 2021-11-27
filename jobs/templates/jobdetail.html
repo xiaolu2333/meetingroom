@@ -3,28 +3,28 @@
 {% block title %}职位详情{% endblock %}
 
 {% block content %}
-    <div style="margin: auto">
-        <a href="/joblist/" style="color: blue">返回职位列表</a>
-        {% if job %}
-            <div class="position_name">
-                <h2>职位名称：{{ job.job_name }}</h2>
-                工作地点：{{ job.city_name }}
-            </div>
-            <hr>
-            <div class="position_responsibility">
-                <h3>岗位职责：</h3>
-                <pre style="font-size: 16px">{{ job.job_responsibility }}</pre>
-            </div><br>
-            <hr>
-            <div class="position_requirement">
-                <h3>岗位要求：</h3>
-                <pre style="font-size: 16px">{{ job.job_requirement }}</pre>
-            </div><br>
-            <div class="apply_position">
-                <input type="button" style="background-color: deepskyblue" value="申请">
-            </div><br>
-        {% else %}
-            <p>岗位不存在！</p>
-        {% endif %}
+<div style="margin: auto;">
+{#    <a href="/joblist/" style="text-decoration: none; color: blue">返回职位列表</a>#}
+    {% if job %}
+    <div class="position_name">
+        <h2>职位名称：{{ job.job_name }}</h2>
+        工作地点：{{ job.city_name }}
     </div>
+    <hr>
+    <div class="position_responsibility">
+        <h3>岗位职责：</h3>
+        <pre style="font-size: 16px">{{ job.job_responsibility }}</pre>
+    </div><br>
+    <hr>
+    <div class="position_requirement">
+        <h3>岗位要求：</h3>
+        <pre style="font-size: 16px">{{ job.job_requirement }}</pre>
+    </div><br>
+    <div class="apply_position">
+        <input type="button" style="background-color: deepskyblue" value="申请">
+    </div><br>
+    {% else %}
+    <p>岗位不存在！</p>
+    {% endif %}
+</div>
 {% endblock %}
