@@ -171,3 +171,7 @@ class Candidate(models.Model):
         db_table = 'candidate'
         verbose_name = '应聘者'
         verbose_name_plural = '应聘者'
+        permissions = [
+            ("export", "Can export 应聘者 list"),
+            ("notify", "Can notify interviewer for candidate review")
+        ]

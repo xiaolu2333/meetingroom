@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib import admin
 from django.db.models import Q
 from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 from interview.models import Candidate
 
@@ -16,11 +17,42 @@ exportable_fields = ('username', 'city', 'phone',
                      "second_result", "second_interviewer_user",
                      "hr_result", "hr_score", "hr_remark", "hr_interviewer_user"
                      )
+@admin.action(description='导出所选的应聘者信息到CSV文件')
+def export_model_as_csv(modeladmin, request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    field_list = exportable_fields
+    # 设置带 BOM 的编码
+    response.charset = 'utf-8-sig'
+    response['Content-Disposition'] = 'attachment; filename=recruitment-candidates_list-%s.csv' % (
+        datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
+    )
+    # 写入表头
+    writer = csv.writer(response)
+    writer.writerow(
+        [queryset.model._meta.get_field(f).verbose_name.title() for f in field_list]
+    )
+    # 写入数据
+    for obj in queryset:
+        # 单行记录
+        csv_line_values = []
+        for field in field_list:
+            field_object = queryset.model._meta.get_field(field)
+            field_value = field_object.value_from_object(obj)
+            if '_user' in str(field_object):
+                if field_value is not None:
+                    field_value = User.objects.get(id=field_value)
+            csv_line_values.append(field_value)
+        writer.writerow(csv_line_values)
+    logger.info("%s exported %d candidate records" % (request.user, len(queryset)))  # Start logging calling
+    return response
+export_model_as_csv.allowed_permissions = ('export',)
 
 
 # Register your models here.
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
+    actions = [export_model_as_csv]
+
     exclude = ['creator', ]
 
     list_display = ['username', 'city', 'bachelor_school',
@@ -139,7 +171,7 @@ class CandidateAdmin(admin.ModelAdmin):
 
     # 获取当前登录用户拥有的对象
     def get_queryset(self, request):
-        qs = super(CandidateAdmin,self).get_queryset(request)
+        qs = super(CandidateAdmin, self).get_queryset(request)
         group_names = self.get_group_user(request.user)
         if request.user.is_superuser or ('hr' in group_names):
             return qs
@@ -147,31 +179,10 @@ class CandidateAdmin(admin.ModelAdmin):
             Q(first_interviewer_user=request.user) | Q(second_interviewer_user=request.user)
         )
 
-    @admin.action(description='导出所选的应聘者信息到CSV文件')
-    def export_model_as_csv(self, request, queryset):
-        response = HttpResponse(content_type='text/csv')
-        field_list = exportable_fields
-        # 设置带 BOM 的编码
-        response.charset = 'utf-8-sig'
-        response['Content-Disposition'] = 'attachment; filename=recruitment-candidates_list-%s.csv' % (
-            datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
-        )
-        # 写入表头
-        writer = csv.writer(response)
-        writer.writerow(
-            [queryset.model._meta.get_field(f).verbose_name.title() for f in field_list]
-        )
-        # 写入数据
-        for obj in queryset:
-            # 单行记录
-            csv_line_values = []
-            for field in field_list:
-                field_object = queryset.model._meta.get_field(field)
-                field_value = field_object.value_from_object(obj)
-                csv_line_values.append(field_value)
-            writer.writerow(csv_line_values)
-        logger.info("%s exported %d candidate records" % (request.user, len(queryset)))  # Start logging calling
-        return response
+    # 检查当前用户是否有导出权限
+    def has_export_permission(self, request):
+        opts = self.opts
+        return request.user.has_perm('%s.%s' % (opts.app_label, "export"))
 
     def save_model(self, request, obj, form, change):
         obj.last_editor = request.user.username
