@@ -53,15 +53,20 @@ class Candidate(models.Model):
 
     # 综合能力评测成绩、笔试评测成绩
     test_score_of_general_ability = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True,
-                                                        verbose_name="综合能力评测成绩")
-    paper_score = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True, verbose_name="笔试成绩")
+                                                        verbose_name="综合能力评测成绩",
+                                                        help_text="00.0-99.9")
+    paper_score = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True, verbose_name="笔试成绩",
+                                      help_text="00.0-99.9")
 
     # 第一轮面试记录
-    first_score = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True, verbose_name="初试成绩")
+    first_score = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True, verbose_name="初试成绩",
+                                      help_text="0.0-9.9 >=9.0极优秀  8.0-8.9优秀  7.0-7.9良好  6.0-6.9一般  <=5.9较差")
     first_learning_ability = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
-                                                 verbose_name="学习能力成绩")
+                                                 verbose_name="学习能力成绩",
+                                                 help_text="0.0-9.9")
     first_professional_competency = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
-                                                        verbose_name="专业能力成绩")
+                                                        verbose_name="专业能力成绩",
+                                                        help_text="0.0-9.9")
     first_advantage = models.TextField(max_length=1024, blank=True, verbose_name="优势")
     first_disadvantage = models.TextField(max_length=1024, blank=True, verbose_name="顾虑与不足")
     first_result = models.CharField(max_length=256, choices=INTERVIEW_RESULT_TYPE, blank=True,
@@ -71,17 +76,24 @@ class Candidate(models.Model):
     first_remark = models.CharField(max_length=256, blank=True, verbose_name="初试备注")
 
     # 第二轮面试记录
-    second_score = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True, verbose_name="专业复试成绩")
+    second_score = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
+                                       verbose_name="专业复试成绩",
+                                       help_text="0.0-9.9 >=9.0极优秀  8.0-8.9优秀  7.0-7.9良好  6.0-6.9一般  <=5.9较差")
     second_learning_ability = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
-                                                  verbose_name="学习能力成绩")
+                                                  verbose_name="学习能力成绩",
+                                                  help_text="0.0-9.9")
     second_professional_competency = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
-                                                         verbose_name="专业能力成绩")
+                                                         verbose_name="专业能力成绩",
+                                                         help_text="0.0-9.9")
     second_pursue_of_excellence = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
-                                                      verbose_name="追求卓越成绩")
+                                                      verbose_name="追求卓越成绩",
+                                                      help_text="0.0-9.9")
     second_communication_ability = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
-                                                       verbose_name="沟通能力成绩")
+                                                       verbose_name="沟通能力成绩",
+                                                       help_text="0.0-9.9")
     second_pressure_score = models.DecimalField(decimal_places=1, max_digits=2, null=True, blank=True,
-                                                verbose_name="抗压能力成绩")
+                                                verbose_name="抗压能力成绩",
+                                                help_text="0.0-9.9")
     second_advantage = models.TextField(max_length=1024, blank=True, verbose_name="优势")
     second_disadvantage = models.TextField(max_length=1024, blank=True, verbose_name="顾虑与不足")
     second_result = models.CharField(max_length=256, choices=INTERVIEW_RESULT_TYPE, blank=True,
@@ -91,7 +103,9 @@ class Candidate(models.Model):
     second_remark = models.CharField(max_length=256, blank=True, verbose_name="专业面试备注")
 
     # HR终面
-    hr_score = models.CharField(max_length=10, choices=HR_SCORE_TYPE, blank=True, verbose_name="HR复试综合等级")
+    hr_score = models.CharField(max_length=10, choices=HR_SCORE_TYPE, blank=True,
+                                verbose_name="HR复试综合等级",
+                                help_text="S极优秀  A优秀  B良好  C一般")
     hr_responsibility = models.CharField(max_length=10, choices=HR_SCORE_TYPE, blank=True, verbose_name="HR责任心")
     hr_communication_ability = models.CharField(max_length=10, choices=HR_SCORE_TYPE, blank=True, verbose_name="HR坦诚沟通")
     hr_logic_ability = models.CharField(max_length=10, choices=HR_SCORE_TYPE, blank=True, verbose_name="HR逻辑思维")
