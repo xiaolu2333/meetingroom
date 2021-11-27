@@ -18,8 +18,9 @@ from django.urls import path, include
 from django.utils.translation import gettext as _	# 实现多语言翻译功能
 
 urlpatterns = [
+    path('', include('jobs.urls')),
+    path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
-    path('', include('jobs.urls'))
 ]
 
 admin.site.site_header = _("浆果科技招聘管理系统后台")
