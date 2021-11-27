@@ -7,7 +7,9 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 
+from interview import dingtalk
 from interview.models import Candidate
+from interview.mytools import deduplication
 
 logger = logging.getLogger(__name__)  # Get an instance of a logger
 
@@ -47,11 +49,23 @@ def export_model_as_csv(modeladmin, request, queryset):
     return response
 export_model_as_csv.allowed_permissions = ('export',)
 
+@admin.action(description='通知一面面试官')
+def notify_interviewer(self, request, queryset):
+    candidates = ""
+    interviewers = ""
+    for obj in queryset:
+        candidates = obj.username + "; " + candidates
+        interviewers = obj.first_interviewer_user.username + "; " + interviewers
+    candidates = deduplication(candidates, "; ")
+    interviewers = deduplication(interviewers, "; ")
+    dingtalk.send("候选人 %s 进入面试环节，请面试官 %s 进行面试。" % (candidates, interviewers))
+export_model_as_csv.allowed_permissions = ('notify',)
+
 
 # Register your models here.
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
-    actions = [export_model_as_csv]
+    actions = [export_model_as_csv, notify_interviewer,]
 
     exclude = ['creator', ]
 
@@ -183,6 +197,12 @@ class CandidateAdmin(admin.ModelAdmin):
     def has_export_permission(self, request):
         opts = self.opts
         return request.user.has_perm('%s.%s' % (opts.app_label, "export"))
+
+    # 检查当前用户是否有通知权限
+    def has_notify_permission(self, request):
+        opts = self.opts
+        return request.user.has_perm('%s.%s' % (opts.app_label, "notify"))
+
 
     def save_model(self, request, obj, form, change):
         obj.last_editor = request.user.username
