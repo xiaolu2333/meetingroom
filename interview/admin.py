@@ -58,6 +58,39 @@ class CandidateAdmin(admin.ModelAdmin):
             "hr_advantage", "hr_disadvantage", "hr_result", "hr_interviewer_user", "hr_remark",)}),
     )
 
+    # 只读字段
+    # readonly_fields = ('first_interviewer_user', 'second_interviewer_user',)
+    def get_group_user(self, user):
+        """获取用户所有所在的组名"""
+        group_names = []
+        for g in user.groups.all():
+            # group_names.append(str(g))
+            group_names.append(g.name)
+        return group_names
+
+    def get_readonly_fields(self, request, obj=None):
+        """当前用户在interviewer组时设置只读字段"""
+        group_names = self.get_group_user(request.user)
+        if 'interviewer' in group_names:
+            logging.info("interviewer is in user's group for %s" % request.user.username)
+            return 'first_interviewer_user', 'second_interviewer_user'
+        else:
+            return ()
+
+    # 可直接编辑
+    default_list_editable = ('first_interviewer_user', 'second_interviewer_user')
+
+    def get_list_editable(self, request):
+        group_names = self.get_group_user(request.user)
+        if request.user.is_superuser or ('hr' in group_names):
+            return self.default_list_editable
+        else:
+            return ()
+
+    def get_changelist_instance(self, request):
+        self.list_editable = self.get_list_editable(request)
+        return super(CandidateAdmin, self).get_changelist_instance(request)
+
     @admin.action(description='导出所选的应聘者信息到CSV文件')
     def export_model_as_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')
@@ -83,22 +116,3 @@ class CandidateAdmin(admin.ModelAdmin):
             writer.writerow(csv_line_values)
         logger.info("%s exported %d candidate records" % (request.user, len(queryset)))  # Start logging calling
         return response
-
-    # 只读字段
-    # readonly_fields = ('first_interviewer_user', 'second_interviewer_user',)
-    def get_group_user(self, user):
-        """获取用户所有所在的组名"""
-        group_names = []
-        for g in user.groups.all():
-            # group_names.append(str(g))
-            group_names.append(g.name)
-        return group_names
-
-    def get_readonly_fields(self, request, obj=None):
-        """当前用户在interviewer组时设置只读字段"""
-        group_names = self.get_group_user(request.user)
-        if 'interviewer' in group_names:
-            logging.info("interviewer is in user's group for %s" % request.user.username)
-            return 'first_interviewer_user', 'second_interviewer_user'
-        else:
-            return ()
