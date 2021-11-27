@@ -1,0 +1,53 @@
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+<h1 class="text-center text-primary">简历详细信息 </h1>
+<div class="container">
+    <div class="card text-white bg-primary w-auto shadow p-3 mb-5 bg-white rounded" style="width: 18rem;">
+        <!-- class="card"定义卡片 -->
+        <div class="card-header bg-primary" id="position_name">
+            <!-- class="card-header"定义卡片头 -->
+            <p id="name">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名: &nbsp;{{ object.username }}</p>
+            <p id="position_requirement">申请职位: &nbsp;{{ object.apply_position }}</p>
+        </div>
+        <div class="card-body bg-light text-primary">
+            <!-- class="card-body"定义卡片体 -->
+            <div class="card-text" id="person_info">
+                <p class="text-dark">性别: {{ object.gender }}</p>
+                <p class="text-dark">城市： {{ object.city }}</p>
+                <p class="text-dark">手机号码: {{ object.phone }}</p>
+                <p class="text-dark">邮件地址: {{ object.email }}</p>
+                {% if object.born_address %}
+                <p class="text-dark">出生地: {{ object.born_address }}</p>
+                {% endif %}
+            </div>
+            <div class="card-text" id="degree_info">
+                <p class="text-dark">本科学校: {{ object.bachelor_school }}</p>
+                {% if object.master_school %}
+                <p class="text-dark">研究生学校: {{ object.master_school }}</p>
+                {% endif %}
+                {% if object.master_school %}
+                <p class="text-dark">博士生学校: {{ object.master_school }}</p>
+                {% endif %}
+                <p class="text-dark">专业: {{ object.major }}</p>
+                <p class="text-dark">学历: {{ object.degree }}</p>
+            </div>
+            <div class="card-text" id="position_requirement">
+                <p class="text-dark">候选人介绍: {{ object.candidate_introduction }}</p>
+                <p class="text-dark">工作经历: {{ object.work_experience }}</p>
+                <p class="text-dark">项目经历: {{ object.project_experience }}</p>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <!-- class="card-footer"定义卡片尾 -->
+            <p class="text-center text-primary">浆果科技</p>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 
-from jobs.views import joblist, jobdetail, ResumeCreateView
+from jobs.views import joblist, jobdetail, ResumeCreateView, ResumeDetail
 
 urlpatterns = [
     path('', joblist, name="index"), # 新增LOGIN_REDIRECT_URL 路由
@@ -8,4 +8,5 @@ urlpatterns = [
     path('job/<int:job_id>', jobdetail, name="jobdetail"),
     # re_path('job/(?P<job_id>\d+)', jobdetail, name="jobdetail"),
     path('resume/add/', ResumeCreateView.as_view(), name='resume-add'),
+    path('resume/<int:pk>/', ResumeDetail.as_view(), name='resume-detail'),
 ]

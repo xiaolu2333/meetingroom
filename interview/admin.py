@@ -6,10 +6,12 @@ from django.contrib import admin
 from django.db.models import Q
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 
 from interview import dingtalk
 from interview.models import Candidate
 from interview.mytools import deduplication
+from jobs.models import Resume
 
 logger = logging.getLogger(__name__)  # Get an instance of a logger
 
@@ -19,6 +21,8 @@ exportable_fields = ('username', 'city', 'phone',
                      "second_result", "second_interviewer_user",
                      "hr_result", "hr_score", "hr_remark", "hr_interviewer_user"
                      )
+
+
 @admin.action(description='导出所选的应聘者信息到CSV文件')
 def export_model_as_csv(modeladmin, request, queryset):
     response = HttpResponse(content_type='text/csv')
@@ -47,7 +51,10 @@ def export_model_as_csv(modeladmin, request, queryset):
         writer.writerow(csv_line_values)
     logger.info("%s exported %d candidate records" % (request.user, len(queryset)))  # Start logging calling
     return response
+
+
 export_model_as_csv.allowed_permissions = ('export',)
+
 
 @admin.action(description='通知一面面试官')
 def notify_interviewer(self, request, queryset):
@@ -59,17 +66,19 @@ def notify_interviewer(self, request, queryset):
     candidates = deduplication(candidates, "; ")
     interviewers = deduplication(interviewers, "; ")
     dingtalk.send("候选人 %s 进入面试环节，请面试官 %s 进行面试。" % (candidates, interviewers))
+
+
 export_model_as_csv.allowed_permissions = ('notify',)
 
 
 # Register your models here.
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
-    actions = [export_model_as_csv, notify_interviewer,]
+    actions = [export_model_as_csv, notify_interviewer, ]
 
     exclude = ['creator', ]
 
-    list_display = ['username', 'city', 'bachelor_school',
+    list_display = ['username', 'get_resume', 'city', 'bachelor_school',
                     'first_score', 'color_first_result', 'first_interviewer_user',
                     'second_score', 'color_second_result', 'second_interviewer_user',
                     'hr_score', 'color_hr_result', 'hr_interviewer_user',
@@ -203,7 +212,18 @@ class CandidateAdmin(admin.ModelAdmin):
         opts = self.opts
         return request.user.has_perm('%s.%s' % (opts.app_label, "notify"))
 
+    # 简历详情
+    def get_resume(self, obj):
+        if not obj.phone:
+            return ""
+        resumes = Resume.objects.filter(phone=obj.phone)
+        if resumes and len(resumes) > 0:
+            return mark_safe('<a href="/resume/%s") target="_blank">%s</a>' % (resumes[0].id, "查看简历"))
+        return ""
+    get_resume.short_description = "查看简历"
+    get_resume.allow_tags = True
 
-    def save_model(self, request, obj, form, change):
-        obj.last_editor = request.user.username
-        super().save_model(request, obj, form, change)
+
+def save_model(self, request, obj, form, change):
+    obj.last_editor = request.user.username
+    super().save_model(request, obj, form, change)
