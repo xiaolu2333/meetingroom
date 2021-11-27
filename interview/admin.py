@@ -20,12 +20,13 @@ exportable_fields = ('username', 'city', 'phone',
 # Register your models here.
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
-    exclude = ['creator', 'created_date', 'modified_date']
+    exclude = ['creator', ]
 
     list_display = ['username', 'city', 'bachelor_school',
                     'first_score', 'color_first_result', 'first_interviewer_user',
                     'second_score', 'color_second_result', 'second_interviewer_user',
                     'hr_score', 'color_hr_result', 'hr_interviewer_user',
+                    'created_date', 'modified_date',
                     'last_editor']
 
     # 查询字段
@@ -39,11 +40,16 @@ class CandidateAdmin(admin.ModelAdmin):
     ordering = ('hr_result', 'second_result', 'first_result')
 
     fieldsets = (
-        ('基本信息', {'fields': (
-            "userid", "username", "city", "phone", "email", "apply_position", "born_address", "gender",
-            "candidate_remark",
-            "bachelor_school", "master_school", "doctor_school", "major", "degree", "test_score_of_general_ability",
-            "paper_score", "last_editor")}),
+        ('基本信息', {
+            'fields': ("userid",
+                       ("username", "gender", "city"),
+                       ("phone", "email"),
+                       ("bachelor_school", "master_school", "doctor_school"),
+                       ("major", "degree", "born_address"),
+                       "apply_position",
+                       ("test_score_of_general_ability", "paper_score"),
+                       "candidate_remark")
+        }),
         ('第一轮面试记录', {'fields': (
             "first_score", "first_learning_ability", "first_professional_competency", "first_advantage",
             "first_disadvantage", "first_result", "first_recommend_position", "first_interviewer_user",
@@ -116,3 +122,7 @@ class CandidateAdmin(admin.ModelAdmin):
             writer.writerow(csv_line_values)
         logger.info("%s exported %d candidate records" % (request.user, len(queryset)))  # Start logging calling
         return response
+
+    def save_model(self, request, obj, form, change):
+        obj.last_editor = request.user.username
+        super().save_model(request, obj, form, change)
