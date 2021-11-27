@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'grappelli',
+    'registration',  # should be immediately above 'django.contrib.admin'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -164,11 +165,11 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     'formatters': {  # 供后面formatter进行选择
-        'verbose': {	# 定义长格式
+        'verbose': {  # 定义长格式
             'format': '{levelname} {asctime} {module} {lineno} {process:d} {thread:d} {message}',
             'style': '{',
         },
-        'simple': {	# 定义短格式
+        'simple': {  # 定义短格式
             'format': '{levelname} {asctime} {name} {lineno} {message}',
             'style': '{',
         },
@@ -206,5 +207,17 @@ LOGGING = {
     },
 }
 
+# dingding
 
 DINGTALK_WEB_HOOK = 'https://oapi.dingtalk.com/robot/send?access_token=688d5e0b585baddc70dba45d0c75b924021b31189b71c09b635e918076837ce0'
+
+# Django-Registration-Redux
+
+# 设为 True，允许用户注册
+REGISTRATION_OPEN = True
+# 关闭注册时重定向到LOGIN_REDIRECT_URL，先完成注册
+ACCOUNT_AUTHENTICATED_REGISTRATION_REDIRECTS = False
+# 注册成功后重定向
+SIMPLE_BACKEND_REDIRECT_URL = '/accounts/login/'
+# 登录成功后重定向
+LOGIN_REDIRECT_URL = '/'
