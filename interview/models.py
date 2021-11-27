@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.html import format_html
 
@@ -72,7 +73,8 @@ class Candidate(models.Model):
     first_result = models.CharField(max_length=256, choices=INTERVIEW_RESULT_TYPE, blank=True,
                                     verbose_name="初步结果")
     first_recommend_position = models.CharField(max_length=256, blank=True, verbose_name="推荐部门")
-    first_interviewer = models.CharField(max_length=256, blank=True, verbose_name="面试官")
+    first_interviewer_user = models.ForeignKey(User, related_name="first_interviewer_user", null=True, blank=True,
+                                               on_delete=models.CASCADE, verbose_name="一面面试官")
     first_remark = models.CharField(max_length=256, blank=True, verbose_name="初试备注")
 
     # 第二轮面试记录
@@ -99,7 +101,8 @@ class Candidate(models.Model):
     second_result = models.CharField(max_length=256, choices=INTERVIEW_RESULT_TYPE, blank=True,
                                      verbose_name="专业复试结果")
     second_recommend_position = models.CharField(max_length=256, blank=True, verbose_name="推荐方向或推荐部门")
-    second_interviewer = models.CharField(max_length=256, blank=True, verbose_name="面试官")
+    second_interviewer_user = models.ForeignKey(User, related_name="second_interviewer_user", null=True, blank=True,
+                                                on_delete=models.CASCADE, verbose_name="二面面试官")
     second_remark = models.CharField(max_length=256, blank=True, verbose_name="专业面试备注")
 
     # HR终面
@@ -115,7 +118,8 @@ class Candidate(models.Model):
     hr_disadvantage = models.TextField(max_length=1024, blank=True, verbose_name="顾虑与不足")
     hr_result = models.CharField(max_length=256, choices=HR_INTERVIEW_RESULT_TYPE, blank=True,
                                  verbose_name="HR复试结果")
-    hr_interviewer = models.CharField(max_length=256, blank=True, verbose_name="HR面试官")
+    hr_interviewer_user = models.ForeignKey(User, related_name="hr_interviewer_user", null=True, blank=True,
+                                            on_delete=models.CASCADE, verbose_name="HR面试官")
     hr_remark = models.CharField(max_length=256, blank=True, verbose_name="HR复试备注")
 
     creator = models.CharField(max_length=256, blank=True, verbose_name="候选人数据创建者")
