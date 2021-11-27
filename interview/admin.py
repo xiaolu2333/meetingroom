@@ -23,9 +23,9 @@ class CandidateAdmin(admin.ModelAdmin):
     exclude = ['creator', 'created_date', 'modified_date']
 
     list_display = ['username', 'city', 'bachelor_school',
-                    'first_score', 'first_result', 'first_interviewer',
-                    'second_score', 'second_result', 'second_interviewer',
-                    'hr_score', 'hr_result', 'hr_interviewer',
+                    'first_score', 'color_first_result', 'first_interviewer',
+                    'second_score', 'color_second_result', 'second_interviewer',
+                    'hr_score', 'color_hr_result', 'hr_interviewer',
                     'last_editor']
 
     # 查询字段

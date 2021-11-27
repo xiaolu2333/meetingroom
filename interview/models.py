@@ -1,15 +1,17 @@
 from django.db import models
+from django.utils.html import format_html
+
 
 # 一面结果
-FIRST_INTERVIEW_RESULT_TYPE = [
+INTERVIEW_RESULT_TYPE = [
     ('建议复试', '建议复试'),
     ('待定', '待定'),
     ('放弃', '放弃')
 ]
 
 # 复试面试建议
-INTERVIEW_RESULT_TYPE = [
-    ('建议复试', '建议复试'),
+HR_INTERVIEW_RESULT_TYPE = [
+    ('建议录用', '建议录用'),
     ('待定', '待定'),
     ('放弃', '放弃')
 ]
@@ -62,7 +64,7 @@ class Candidate(models.Model):
                                                         verbose_name="专业能力成绩")
     first_advantage = models.TextField(max_length=1024, blank=True, verbose_name="优势")
     first_disadvantage = models.TextField(max_length=1024, blank=True, verbose_name="顾虑与不足")
-    first_result = models.CharField(max_length=256, choices=FIRST_INTERVIEW_RESULT_TYPE, blank=True,
+    first_result = models.CharField(max_length=256, choices=INTERVIEW_RESULT_TYPE, blank=True,
                                     verbose_name="初步结果")
     first_recommend_position = models.CharField(max_length=256, blank=True, verbose_name="推荐部门")
     first_interviewer = models.CharField(max_length=256, blank=True, verbose_name="面试官")
@@ -97,7 +99,7 @@ class Candidate(models.Model):
     hr_stability = models.CharField(max_length=10, choices=HR_SCORE_TYPE, blank=True, verbose_name="HR稳定性")
     hr_advantage = models.TextField(max_length=1024, blank=True, verbose_name="优势")
     hr_disadvantage = models.TextField(max_length=1024, blank=True, verbose_name="顾虑与不足")
-    hr_result = models.CharField(max_length=256, choices=INTERVIEW_RESULT_TYPE, blank=True,
+    hr_result = models.CharField(max_length=256, choices=HR_INTERVIEW_RESULT_TYPE, blank=True,
                                  verbose_name="HR复试结果")
     hr_interviewer = models.CharField(max_length=256, blank=True, verbose_name="HR面试官")
     hr_remark = models.CharField(max_length=256, blank=True, verbose_name="HR复试备注")
@@ -106,6 +108,43 @@ class Candidate(models.Model):
     created_date = models.DateTimeField(auto_now=True, verbose_name="创建时间")
     modified_date = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="更新时间")
     last_editor = models.CharField(max_length=256, blank=True, verbose_name="最后编辑者")
+
+    # 设置字段样式
+    def color_first_result(self):
+        color_code = 'black'
+        if self.first_result == '建议复试':
+            color_code = 'green'
+        elif self.first_result == '待定':
+            color_code = 'blue'
+        elif self.first_result == '放弃':
+            color_code = 'red'
+        return format_html('<span style="color:{};">{}</span>'.format(color_code, self.first_result))
+
+    color_first_result.short_description = '一轮面试结果'
+
+    def color_second_result(self):
+        color_code = 'black'
+        if self.second_result == '建议复试':
+            color_code = 'green'
+        elif self.second_result == '待定':
+            color_code = 'blue'
+        elif self.second_result == '放弃':
+            color_code = 'red'
+        return format_html('<span style="color:{};">{}</span>'.format(color_code, self.second_result))
+
+    color_second_result.short_description = '专业复试结果'
+
+    def color_hr_result(self):
+        color_code = 'black'
+        if self.hr_result == '建议录用':
+            color_code = 'green'
+        elif self.hr_result == '待定':
+            color_code = 'blue'
+        elif self.hr_result == '放弃':
+            color_code = 'red'
+        return format_html('<span style="color:{};">{}</span>'.format(color_code, self.hr_result))
+
+    color_hr_result.short_description = 'HR复试结果'
 
     def __str__(self):
         return self.username

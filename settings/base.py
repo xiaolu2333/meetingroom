@@ -188,14 +188,14 @@ LOGGING = {
         },
     },
 
-    'root': {
-        'handlers': ['console', 'file'],
-        'level': 'INFO',
-    },
+    # 'root': {
+    #     'handlers': ['console', 'file'],
+    #     'level': 'INFO',
+    # },
 
     "loggers": {
         "django.db.backends": {  # 指定日志记录器
-            "handlers": ["console"],  # 指定日志处理方法
+            "handlers": ["file"],  # 指定日志处理方法
             "level": "DEBUG",  # 指定日志级别
         },
         # "django_python3_ldap": {
