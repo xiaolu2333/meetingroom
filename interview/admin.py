@@ -33,7 +33,7 @@ class CandidateAdmin(admin.ModelAdmin):
 
     # 条件筛选
     list_filter = ['city', 'first_result', 'second_result', 'hr_result',
-                   'first_interviewer_user', 'second_interviewer_user','hr_interviewer_user']
+                   'first_interviewer_user', 'second_interviewer_user', 'hr_interviewer_user']
 
     # 条件排序
     ordering = ('hr_result', 'second_result', 'first_result')
@@ -46,7 +46,8 @@ class CandidateAdmin(admin.ModelAdmin):
             "paper_score", "last_editor")}),
         ('第一轮面试记录', {'fields': (
             "first_score", "first_learning_ability", "first_professional_competency", "first_advantage",
-            "first_disadvantage", "first_result", "first_recommend_position", "first_interviewer_user", "first_remark")}),
+            "first_disadvantage", "first_result", "first_recommend_position", "first_interviewer_user",
+            "first_remark")}),
         ('第二轮专业复试记录', {'fields': (
             "second_score", "second_learning_ability", "second_professional_competency", "second_pursue_of_excellence",
             "second_communication_ability", "second_pressure_score", "second_advantage", "second_disadvantage",
@@ -82,3 +83,22 @@ class CandidateAdmin(admin.ModelAdmin):
             writer.writerow(csv_line_values)
         logger.info("%s exported %d candidate records" % (request.user, len(queryset)))  # Start logging calling
         return response
+
+    # 只读字段
+    # readonly_fields = ('first_interviewer_user', 'second_interviewer_user',)
+    def get_group_user(self, user):
+        """获取用户所有所在的组名"""
+        group_names = []
+        for g in user.groups.all():
+            # group_names.append(str(g))
+            group_names.append(g.name)
+        return group_names
+
+    def get_readonly_fields(self, request, obj=None):
+        """当前用户在interviewer组时设置只读字段"""
+        group_names = self.get_group_user(request.user)
+        if 'interviewer' in group_names:
+            logging.info("interviewer is in user's group for %s" % request.user.username)
+            return 'first_interviewer_user', 'second_interviewer_user'
+        else:
+            return ()
