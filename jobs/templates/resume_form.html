@@ -1,11 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}职位申请{% endblock %}
+{# Load the tag library #}
+{% load bootstrap4 %}
 
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+
+<h2 class="text-center text-primary">投递简历</h2>
 {% block content %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="提交">
-</form>
+    <div class="container">
+        {# Display a form #}
+        <form action="{% url 'resume-add' %}" method="post" class="form">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons submit='OK' reset="Reset" %}{% endbuttons %}
+        </form>
+    </div>
 {% endblock %}

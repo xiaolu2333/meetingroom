@@ -3,29 +3,39 @@
 {% block title %}职位详情{% endblock %}
 
 {% block content %}
-<div style="margin: auto;">
-{#    <a href="/joblist/" style="text-decoration: none; color: blue">返回职位列表</a>#}
-    {% if job %}
-    <div class="position_name">
-        <h2>职位名称：{{ job.job_name }}</h2>
-        工作地点：{{ job.city_name }}
+    <div class="container">
+        {#    <a href="/joblist/" style="text-decoration: none; color: blue">返回职位列表</a>#}
+        {% if job %}
+            <div class="card text-white bg-primary w-auto" style="width: 18rem;">
+                <!-- class="card"定义卡片 -->
+                <div class="card-header bg-primary" id="position_name">
+                    <!-- class="card-header"定义卡片头 -->
+                    {{ job.job_name }}
+                </div>
+                <div class="card-body bg-light text-primary">
+                    <!-- class="card-body"定义卡片体 -->
+                    <p class="card-text" id="city_name">
+                        工作地点：<br>
+                        <pre >{{ job.city_name }}</pre>
+                    </p>
+                    <p class="card-text" id="position_responsibility">
+                        岗位职责：<br>
+                        <pre>{{ job.job_responsibility }}</pre>
+                    </p>
+                    <p class="card-text" id="position_requirement">
+                        岗位要求：<br>
+                        <pre>{{ job.job_requirement }}</pre>
+                    </p>
+                </div>
+                <div class="card-footer bg-light">
+                    <!-- class="card-footer"定义卡片尾 -->
+                    <label for="apply_position"></label>
+                    <input class="btn btn-outline-primary" value="申请" id="apply_position"
+                           onclick="location.href='/resume/add/?apply_position={{ job.job_name }}&city={{ job.city_name }}'">
+                </div>
+            </div>
+        {% else %}
+            <p>岗位不存在！</p>
+        {% endif %}
     </div>
-    <hr>
-    <div class="position_responsibility">
-        <h3>岗位职责：</h3>
-        <pre style="font-size: 16px">{{ job.job_responsibility }}</pre>
-    </div><br>
-    <hr>
-    <div class="position_requirement">
-        <h3>岗位要求：</h3>
-        <pre style="font-size: 16px">{{ job.job_requirement }}</pre>
-    </div><br>
-    <div class="apply_position">
-        <input type="button" style="background-color: deeppink" value="申请"
-               onclick="location.href='/resume/add/?apply_position={{ job.job_name }}&city={{ job.city_name }}'">
-    </div><br>
-    {% else %}
-    <p>岗位不存在！</p>
-    {% endif %}
-</div>
 {% endblock %}

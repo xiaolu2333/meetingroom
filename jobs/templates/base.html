@@ -1,29 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Title{% endblock %}</title>
-</head>
-<body>
-    <h1 style="margin: auto;width: auto; color: indianred">浆果科技职位</h1>
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+
+<title>{% block title %}Title{% endblock %}</title>
+
+<div class="container-fluid">
+    <h1 class="text-center text-primary">浆果科技职位</h1>
     <hr>
     {% block header %}
-    <a href="/" style="text-decoration: none; color: indianred">首页</a>
-    <a href="/joblist/" style="text-decoration: none; color: indianred">职位列表</a>
-    {% if user.is_authenticated %}
-    <a href="/accounts/logout/" style="text-decoration: none; color: indianred">退出</a>
-    {% else %}
-    <a href="/accounts/login/" style="text-decoration: none; color: indianred">登录</a>
-    {% endif %}
+        {#        <a href="/" style="text-decoration: none; color: indianred">首页</a>#}
+        <ul class="nav nav-pills nav-fill">
+            <li class="nav-item">
+                <a href="/" class="btn btn-outline-primary shadow-sm mb-1 bg-body rounded text-primary">首页</a>
+            </li>
+            <li class="nav-item">
+                <a href="/joblist/" class="btn btn-outline-primary shadow-sm mb-1 bg-body rounded text-primary">职位列表</a>
+            </li>
+            <li class="nav-item">
+                {% if user.is_authenticated %}
+                    <a href="/accounts/logout/"
+                       class="btn btn-outline-primary shadow-sm mb-1 bg-body rounded text-primary">退出</a>
+                {% else %}
+                    <a href="/accounts/login/"
+                       class="btn btn-outline-primary shadow-sm mb-1 bg-body rounded text-primary">登录</a>
+                {% endif %}
+            </li>
+        </ul>
     {% endblock %}
     <hr>
-
-    {% if user.is_authenticated %}
-    <p><span style="color: deeppink">{{ user.username }}</span>，终于等待你，期待与你一起探索浆果的世界！</p>
-    {% else %}
-    <p>登陆后可提交简历，，期待与你一起探索浆果的世界！</p>
-    {% endif %}
-
+    <div class="text-center">
+        {% if user.is_authenticated %}
+            <p class="text-right"><span class="text-primary">{{ user.username }}</span>，终于等待你，期待与你一起探索浆果的世界！</p>
+        {% else %}
+            <p class="text-warning">登陆后可提交简历，，期待与你一起探索浆果的世界！</p>
+        {% endif %}
+    </div>
     {% block content %}{% endblock %}
-</body>
-</html>
+</div>
