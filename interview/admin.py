@@ -137,6 +137,16 @@ class CandidateAdmin(admin.ModelAdmin):
         self.list_editable = self.get_list_editable(request)
         return super(CandidateAdmin, self).get_changelist_instance(request)
 
+    # 获取当前登录用户拥有的对象
+    def get_queryset(self, request):
+        qs = super(CandidateAdmin,self).get_queryset(request)
+        group_names = self.get_group_user(request.user)
+        if request.user.is_superuser or ('hr' in group_names):
+            return qs
+        return Candidate.objects.filter(
+            Q(first_interviewer_user=request.user) | Q(second_interviewer_user=request.user)
+        )
+
     @admin.action(description='导出所选的应聘者信息到CSV文件')
     def export_model_as_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')
