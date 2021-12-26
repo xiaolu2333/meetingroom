@@ -49,7 +49,7 @@ def export_model_as_csv(modeladmin, request, queryset):
                     field_value = User.objects.get(id=field_value)
             csv_line_values.append(field_value)
         writer.writerow(csv_line_values)
-    logger.info("%s exported %d candidate records" % (request.user, len(queryset)))  # Start logging calling
+    logger.error(" %s had exported %s candidate records" % (request.user.username, len(queryset)))
     return response
 
 
