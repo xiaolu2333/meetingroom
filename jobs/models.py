@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 from interview.models import DEGREE_TYPE
 
@@ -27,8 +28,8 @@ class Job(models.Model):
     job_responsibility = models.TextField(max_length=1024, verbose_name="职位职责")
     job_requirement = models.TextField(max_length=1024, blank=False, verbose_name="职位要求")
     creator = models.ForeignKey(User, verbose_name="创建人", null=True, on_delete=models.SET_NULL)
-    created_time = models.DateTimeField(default=datetime.now, verbose_name="创建日期")
-    modified_time = models.DateTimeField(default=datetime.now, verbose_name="修改时间")
+    created_time = models.DateTimeField(default=now, verbose_name="创建日期")
+    modified_time = models.DateTimeField(default=now, verbose_name="修改时间")
 
 
 class Resume(models.Model):
@@ -47,8 +48,8 @@ class Resume(models.Model):
     doctor_school = models.CharField(max_length=125, blank=True, verbose_name="博士生学校")
     major = models.CharField(max_length=125, blank=True, verbose_name="专业")
     degree = models.CharField(max_length=125, choices=DEGREE_TYPE, blank=True, verbose_name="学历")
-    created_date = models.DateTimeField(default=datetime.now, verbose_name="创建日期")
-    modified_date = models.DateTimeField(default=datetime.now, verbose_name="修改时间")
+    created_date = models.DateTimeField(default=now, verbose_name="创建日期")
+    modified_date = models.DateTimeField(default=now, verbose_name="修改时间")
 
     # 自我介绍、工作经历、项目经历
     candidate_introduction = models.TextField(max_length=2056, blank=True, verbose_name="自我介绍")
