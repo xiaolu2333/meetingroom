@@ -31,6 +31,9 @@ class Job(models.Model):
     created_time = models.DateTimeField(default=now, verbose_name="创建日期")
     modified_time = models.DateTimeField(default=now, verbose_name="修改时间")
 
+    def __str__(self):
+        return self.job_name
+
 
 class Resume(models.Model):
     username = models.CharField(max_length=125, verbose_name="姓名")
@@ -55,6 +58,9 @@ class Resume(models.Model):
     candidate_introduction = models.TextField(max_length=2056, blank=True, verbose_name="自我介绍")
     work_experience = models.TextField(max_length=1024, blank=True, verbose_name="工作经历")
     project_experience = models.TextField(max_length=4112, blank=True, verbose_name="项目经历")
+
+    def __str__(self):
+        return self.username
 
     class Meta:
         verbose_name = "简历"
