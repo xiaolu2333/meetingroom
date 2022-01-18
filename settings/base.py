@@ -41,10 +41,11 @@ INSTALLED_APPS = [
     'django_python3_ldap',
     'jobs',
     'interview',
+    'sentry_sdk',
 ]
 
 MIDDLEWARE = [
-    'interview.middleware.performance.performance_logger_middleware',
+    'interview.middleware.performance.PerformanceAndExceptionLoggerMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -222,7 +223,7 @@ LOGGING = {
 
 # dingding
 
-DINGTALK_WEB_HOOK = 'https://oapi.dingtalk.com/robot/send?access_token=688d5e0b585baddc70dba45d0c75b924021b31189b71c09b635e918076837ce0'
+DINGTALK_WEB_HOOK = 'https://oapi.dingtalk.com/robot/send?access_token=af4183f11a621768b5e039ff95981e64185a8ccd43323d997136182748fdc707'
 
 # Django-Registration-Redux
 
@@ -239,7 +240,7 @@ LOGIN_REDIRECT_URL = '/'
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 sentry_sdk.init(
-    dsn="http://b22e02de68c24cbaba2caa85393648c6@127.0.0.1:9000/2",
+    dsn="http://4e243941ae364b7a83cc0538236f4f78@127.0.0.1:9000/2",
     integrations=[DjangoIntegration()],
 
     # Set traces_sample_rate to 1.0 to capture 100%

@@ -49,7 +49,7 @@ def export_model_as_csv(modeladmin, request, queryset):
                     field_value = User.objects.get(id=field_value)
             csv_line_values.append(field_value)
         writer.writerow(csv_line_values)
-    logger.error(" %s had exported %s candidate records" % (request.user.username, len(queryset)))
+    logger.error(" %s has exported %s candidate records" % (request.user.username, len(queryset)))
     return response
 
 
@@ -223,7 +223,6 @@ class CandidateAdmin(admin.ModelAdmin):
     get_resume.short_description = "查看简历"
     get_resume.allow_tags = True
 
-
-def save_model(self, request, obj, form, change):
-    obj.last_editor = request.user.username
-    super().save_model(request, obj, form, change)
+    def save_model(self, request, obj, form, change):
+        obj.last_editor = request.user.username
+        super().save_model(request, obj, form, change)
